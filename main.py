@@ -17,7 +17,11 @@ COUNTER_FILE = "./count.txt"
 CURRENT_COUNTER = 0
 
 async def lurk(cmd: chat.ChatCommand):
+  print(cmd)
   await cmd.reply("Well lurk who's here")
+
+async def hydrate(cmd: chat.ChatCommand):
+  await cmd.reply(f"{cmd.user.name} wants everyone to stay hydrated.  Drink up!")
 
 async def count(cmd: chat.ChatCommand):
   global CURRENT_COUNTER
@@ -55,6 +59,7 @@ async def runBot():
 
   # COMMANDS
   chatObj.register_command('lurk', lurk)
+  chatObj.register_command('hydrate', hydrate)
   await initCount()
   chatObj.register_command('plushie', count)
 
