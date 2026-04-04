@@ -1,0 +1,31 @@
+Simple twitch bot.  You will need to do the following before you can run it:
+- Install python and needed modules
+- Setup your `.env` file
+
+## Installing python and modules
+Python is a popular programming language.  If you do not have it installed already, you can get it from their website [here](https://www.python.org/downloads/)
+
+Once you have python installed, you can get the modules needed for this codebase by opening a command prompt in the folder and running `pip install -r requirements.txt`
+
+## Setting up the .env file
+You will need to create a new file to hold your secret values from Twitch.  This file is a regular text file, simply named `.env`.  The contents of that file will look like this:
+```
+CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TAGET_CHANNEL=your-username
+```
+
+To get these values, you will need a Twitch bot.  You can set that up [here](https://dev.twitch.tv/console/apps).  You can log in with your Twitch credentials and register the new application (bot).  For `OAuth Redirect URLs` use `http://localhost:17563`.  For Category, this is a `Chat Bot`.  Then you will need to get your Client ID and Client Secret and put those valus into the `.env` file after the `=` for each one.  Just replace the "x" with your sequence of letters and numbers.  Do not put any spaces.  For `TARGET_CHANNEL`, this is simply your Twitch channel name.  When you go to to your channel on twitch, the URL should be `www.twitch.tv/your-username`, you just need that bit after the last `/`.  Again, do not put any spaces.
+
+## Editing commands
+`main.py` is where it all happens.  If you do not know python, it's going to be hard to read or add new functionality to.  But, if you just want to change what the `!` command is, I believe in you.  Just look for a line that says something like `chatObj.register_command('lurk', lurk)`.  This specific example is for the `!lurk` command.  If you want to change it to instead be `!snooze`, you just need to update the bit between the `'`.  So for that example, you would end up with it looking like this: `chatObj.register_command('snooze', lurk)`.
+
+If you want to change more than just the command name, you will need to look at teh function.  So for that `!lurk` command, you will need to find the `async def lurk(cmd: chat.ChatCommand):` function.  Change the function to do whatever you want.  If you just want the text it responds with to be different, Change the text between the `"`, so it would then read something like:
+`await cmd.reply("I changed this!")`.
+
+## Adding commands
+If you want to do this, I hope you know python.  If you do not, I hope your AI efforts are fruitful.  Essentially, what you want to do is add the new command next to the others towards the bottom of `main.py`, like so `chatObj.register_command('newCommand', newFunction)`.  You also need to add the functionality to a new function towards the top like so:
+```
+async def newFunction(cmd: chat.ChatCommand):
+  await cmd.reply("This is new functionality for a new command")
+```
