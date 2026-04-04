@@ -39,6 +39,11 @@ async def initCount():
   print(f"Counter initialized to {CURRENT_COUNTER}")
 
 
+async def onSub(msg: chat.ChatSub):
+  print(f'New subscription in {sub.room.name}:\n'
+          f'  Type: {sub.sub_plan}\n'
+          f'  Message: {sub.sub_message}')
+
 async def onMessage(msg: chat.ChatMessage):
   print(f'{msg.user.display_name} - {msg.text}')
 
@@ -56,6 +61,7 @@ async def runBot():
   # EVENTS
   chatObj.register_event(ChatEvent.READY, onReady)
   chatObj.register_event(ChatEvent.MESSAGE, onMessage)
+  chatObj.register_event(ChatEvent.SUB, onSub)
 
   # COMMANDS
   chatObj.register_command('lurk', lurk)
