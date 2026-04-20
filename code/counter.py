@@ -3,7 +3,7 @@ import json
 
 USER_COUNTER_FILE = "./countUser.json"
 DAILY_COUNT_MESSAGE = "[[USER]] has eaten [[COUNT]] glizzies"
-COUNTER_FILE = "./count.txt"
+COUNTER_FILE = "./code/count.txt"
 CURRENT_COUNTER = 0
 
 async def blocked(cmd: chat.ChatCommand):

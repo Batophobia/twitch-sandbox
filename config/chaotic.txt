@@ -1,0 +1,1 @@
+💥 {{USERNAME}} is {{RANDOM_NUMBER:0-100}}% chaotic today 🧨

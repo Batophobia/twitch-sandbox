@@ -4,9 +4,9 @@ import asyncio
 from twitchAPI.type import AuthScope, ChatEvent
 from twitchAPI import chat, oauth, twitch
 from twitchAPI.chat.middleware import StreamerOnly, GlobalCommandCooldown, ChannelUserCommandCooldown
-import events
-import counter
-import replies
+import code.events as events
+import code.counter as counter
+import code.replies as replies
 
 # https://dev.twitch.tv/console/apps
 
@@ -68,7 +68,10 @@ async def runBot():
   chatObj.start()
 
   try:
-    input('press ENTER to stop\n')
+    while True:
+      await asyncio.sleep(1)
+  except KeyboardInterrupt:
+    pass
   finally:
     chatObj.stop()
     await bot.close()

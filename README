@@ -1,6 +1,6 @@
 Simple twitch bot.  You will need to do the following before you can run it:
 - Install python and needed modules
-- Setup your ".env" file
+- Setup your ".env" file or setup OBS
 
 ## Installing python and modules
 Python is a popular programming language.  If you do not have it installed already, you can get it from their website here: https://www.python.org/downloads/
@@ -15,6 +15,22 @@ CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TARGET_CHANNEL=your-username
  
 To get these values, you will need a Twitch bot.  You can set that up here: https://dev.twitch.tv/console/apps.  You can log in with your Twitch credentials and register the new application (bot).  For "OAuth Redirect URLs" use "http://localhost:17563".  For Category, this is a "Chat Bot".  Then you will need to get your Client ID and Client Secret and put those valus into the ".env" file after the "=" for each one.  Just replace the "x" with your sequence of letters and numbers.  Do not put any spaces.  For "TARGET_CHANNEL", this is simply your Twitch channel name.  When you go to to your channel on twitch, the URL should be "www.twitch.tv/your-username", you just need that bit after the last "/".  Again, do not put any spaces.
+
+## Setting up OBS
+Open up the Scripts window by going to Tools -> Scripts
+User the "+" button to add "obsWrapper.py" and fill in the values:
+
+Bot Path is the filepath to main.py
+Target Channel Name is your Twitch channel
+Client ID and Client Secret are special values that you get setting up your bot with Twitch
+
+To get these values, you will need a Twitch bot.  You can set that up here: https://dev.twitch.tv/console/apps.  You can log in with your Twitch credentials and register the new application (bot).  For "OAuth Redirect URLs" use "http://localhost:17563".  For Category, this is a "Chat Bot".  Then you will need to get your Client ID and Client Secret and put those valus into the ".env" file after the "=" for each one.  Just replace the "x" with your sequence of letters and numbers.  Do not put any spaces.  For "Target Channel Name", this is simply your Twitch channel name.  When you go to to your channel on twitch, the URL should be "www.twitch.tv/your-username", you just need that bit after the last "/".  Again, do not put any spaces.
+
+## Editing replies
+Simple customization is in the "config" folder.  The commands pull whatever is in the file for the command and will replace some things if needed before sending that to your Twitch chat.  These variables are distinguished by double curly braces.  Supported customization variables are:
+- {{USERNAME}}
+- {{RANDOM_NUMBER:MIN-MAX}}
+  - Replace MIN and MAX with the minimum and maximum values you want from the random number generator.  For example, if you used {{RANDOM_NUMBER:1-3}} you would randomly get a 1, 2, or 3
 
 ## Editing commands
 "main.py" is where it all happens.  If you do not know python, it's going to be hard to read or add new functionality to.  But, if you just want to change what the "!" command is, I believe in you.  Just look for a line that says something like "chatObj.register_command('lurk', lurk)".  This specific example is for the "!lurk" command.  If you want to change it to instead be "!snooze", you just need to update the bit between the "'".  So for that example, you would end up with it looking like this: "chatObj.register_command('snooze', lurk)".
