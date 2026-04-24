@@ -107,7 +107,7 @@ async def runBot():
     print("-------------------------------------")
   
   # TESTING COMMANDS
-  chatObj.register_command("test", replies.test)
+  # chatObj.register_command("test", replies.test)
 
   # Blocked and restricted
   chatObj.default_command_execution_blocked_handler = handle_command_blocked
