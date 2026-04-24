@@ -1,40 +1,42 @@
 from twitchAPI import chat
-import random
-from random import randrange
-from datetime import datetime
 from code.common import replaceVars
-from code.common import getConfigText
+from code.common import replaceRandom
+from code.common import getCommandData
 
 #https://pytwitchapi.dev/en/stable/modules/twitchAPI.chat.html#twitchAPI.chat.ChatMessage
 
-async def lurk(cmd: chat.ChatCommand):
-  configString = getConfigText("./config/chaotic.txt")
-  resp = await replaceVars(cmd, configString)
+async def reply(cmd: chat.ChatCommand):
+  # Get command config
+  cmdData = getCommandData(cmd)
+  
+  # Get random seed if needed
+  randSeed = None
+  if("seed" in cmdData):
+    randSeed = cmdData["seed"]
+  
+  # Generate response
+  resp = cmdData["response"]
+  resp = replaceVars(cmd, resp)
+  resp = replaceRandom(cmd, resp, randSeed)
   await cmd.reply(resp)
 
-async def chaotic(cmd: chat.ChatCommand):
-  curDate = datetime.now().strftime("%d/%m/%Y")
-  configString = getConfigText("./config/chaotic.txt")
-  resp = await replaceVars(cmd, configString, f"chaos{cmd.user.name}{curDate}")
-  await cmd.reply(resp)
-async def cozy(cmd: chat.ChatCommand):
-  curDate = datetime.now().strftime("%d/%m/%Y")
-  configString = getConfigText("./config/cozy.txt")
-  resp = await replaceVars(cmd, configString, f"cozy{cmd.user.name}{curDate}")
-  await cmd.reply(resp)
-
-####### HYDRATE BLOCK #######
-
-HYDRATE_COOLDOWN = 60
-
-async def hydrate(cmd: chat.ChatCommand):
-  configString = getConfigText("./config/hydrate.txt")
-  resp = await replaceVars(cmd, configString)
+async def blocked(cmd: chat.ChatCommand):
+  # Get command config
+  cmdData = getCommandData(cmd)
+  
+  # Get random seed if needed
+  randSeed = None
+  if("seed" in cmdData):
+    randSeed = cmdData["seed"]
+  
+  # Generate response
+  resp = cmdData["response"]
+  resp = replaceVars(cmd, resp)
+  resp = replaceRandom(cmd, resp, randSeed)
   await cmd.reply(resp)
 
-async def blockedHydrate(cmd: chat.ChatCommand):
-  configString = getConfigText("./config/hydrate-cooldown.txt")
-  resp = await replaceVars(cmd, configString)
-  await cmd.reply(resp)
 
-####### HYDRATE BLOCK #######
+async def test(cmd: chat.ChatCommand):
+  await cmd.chat.send_message(cmd.room, "line 1")
+  await cmd.chat.send_message(cmd.room, "line 2")
+  await cmd.reply("line 3")

@@ -1,0 +1,5 @@
+{
+  "enterMessage": "{{USERNAME}} has entered the giveaway",
+  "winnerMessage": "{{WINNER}} has won the giveaway",
+  "defaultLengthMinutes": 30
+}

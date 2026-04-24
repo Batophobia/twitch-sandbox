@@ -1,0 +1,44 @@
+{
+  "lurk": {
+    "response": "Well lurk who's here!",
+    "type": "reply"
+  },
+  "tired": {
+    "response": "😴 {{USERNAME}} is {{RANDOM_NUMBER:0-100}}% tired today 💤",
+    "type": "reply",
+    "seed": "zzz{{USERNAME}}{{NOW_DATE}}"
+  },
+  "hydrate": {
+    "response": "{{USERNAME}} wants everyone to stay hydrated.  Drink up!",
+    "type": "reply",
+    "alias": [
+      "drink",
+      "water"
+    ],
+    "cooldown": {
+      "seconds": 60,
+      "type": "global",
+      "message": "Hydrate command is currently on cooldown"
+    }
+  },
+  "daily": {
+    "response": "{{USERNAME}} has been here {{COUNT}} times",
+    "type": "counter",
+    "user-based": true,
+    "cooldown": {
+      "seconds": 86400,
+      "type": "user",
+      "message": "!daily command cannot be used again"
+    }
+  },
+  "wins": {
+    "response": "Total wins: {{COUNT}}",
+    "type": "counter",
+    "user-based": false,
+    "file": "./code/count.txt",
+    "restriction": {
+      "type": "STREAMER_ONLY",
+      "message": "Nice try {{USERNAME}}"
+    }
+  }
+}

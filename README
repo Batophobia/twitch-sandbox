@@ -26,20 +26,168 @@ Client ID and Client Secret are special values that you get setting up your bot 
 
 To get these values, you will need a Twitch bot.  You can set that up here: https://dev.twitch.tv/console/apps.  You can log in with your Twitch credentials and register the new application (bot).  For "OAuth Redirect URLs" use "http://localhost:17563".  For Category, this is a "Chat Bot".  Then you will need to get your Client ID and Client Secret and put those values into the fields in OBS.  For "Target Channel Name", this is simply your Twitch channel name.  When you go to to your channel on twitch, the URL should be "www.twitch.tv/your-username", you just need that bit after the last "/".  Again, do not put any spaces.
 
-## Editing replies
-Simple customization is in the "config" folder.  The commands pull whatever is in the file for the command and will replace some things if needed before sending that to your Twitch chat.  These variables are distinguished by double curly braces.  Supported customization variables are:
+## Setting up commands
+You can easily add, remove, and edit commands using the "./config/commands.json" file.  If you are unfamiliar, JSON is a relatively common way to bridge the gap between something the computer can understand and something we humans can understand.  Essentially, each command will be formatted like this:
+
+"command-name": {
+  "response": "Command response",
+  "type": "command-type"
+}
+
+Examples are available in the default commands.json file, so feel free to check it out.  Feel free to search JSON and read up on how it works or use a validator to help you edit your own config.  Just remember, the double quotes (") are important, and make sure to have commas (,) between the different commands.  Let's break down the parts:
+
+"command-name" -
+Change this to what you want your command to be, not including the "!".  So if you want "!lurk" you just put "lurk"
+
+"response" -
+The response you want the bot to give back.  If you want the command to respond with "A hotdog absolutely is a taco", then just put that here.
+
+"type" -
+This helps the bot determine how you want the command to work.  Currently the bot supports these types:
+"reply" - Basic response to the command
+"counter" - Increment a counter and respond
+
+## Command Types - reply
+If the "type" attribute for your command is set to "reply", then the bot will simply reply to the user with whatever you have set.  The response you use can include variables, which we'll talk about more in a bit.  So, if you want a "!lurk" command that responds with "Thank you for lurking", you would setup that command like so:
+
+"lurk": {
+  "response": "Thank you for lurking",
+  "type": "reply"
+}
+
+Let's break that down line-by-line.
+
+"lurk": {
+ - This is the name of the command.  In this case, !lurk is the command
+
+"response": "Thank you for lurking",
+ - This is the response the bot will return.  In this case, the response is:
+  Thank you for lurking
+
+"type": "reply"
+ - This is the type of command.  In this case, it's a simple "reply"
+
+}
+- This is the closing curly brace for this command.  Don't forget it!
+
+## Command Types - counter
+If the "type" attribute for your command is set to "counter", then the bot will increment a counter and reply to the user with whatever you have set.  These counters can be global, with the entire community sharing the same total, or user-based, where each user has their own total.  Here is an example of a "!death" counter that is not user-based, so the total is for your entire community.
+
+"death": {
+  "response": "We've collectively died {{COUNT}} times",
+  "type": "counter",
+  "user-based": false,
+  "file": "./code/count.txt"
+}
+
+Let's break that down line-by-line.
+
+"death": {
+ - This is the name of the command.  In this case, !death is the command
+
+"response": "We've collectively died {{COUNT}} times",
+ - This is the response the bot will return.  {{COUNT}} is what's called a variable, which we will go into more later.  But, this one is special for "counter" type commands.  This is replaced with the current count before replying in the chat.  Let's assume the current count was at 5 before someone ran this command.  In this case, the response would be:
+  We've collectively died 6 times
+
+"type": "counter",
+ - This is the type of command.  In this case, it's a counter
+
+"user-based": false,
+ - This is the type of counter.  Notice the part to the right of the colon (:) does not have double quotes here.  That's important, because the only options are true and false.  In this case, the value is false, so this is not a user-based counter.  That means the total will be shared for your entire community.
+
+"file": "./code/count.txt"
+ - This is the path to the file that will be used to store the current total.  The "./" at the front means it will start from wherever your main.py file is located.  You can use this file in OBS as a Text source to display the current total on your stream.
+
+}
+- This is the closing curly brace for this command.  Don't forget it!
+
+## Variables
+Variables are distinguished by double curly braces ( { and } ).  Supported customization variables are:
+
 - {{USERNAME}}
+  - The user that sent the command
+
 - {{RANDOM_NUMBER:MIN-MAX}}
   - Replace MIN and MAX with the minimum and maximum values you want from the random number generator.  For example, if you used {{RANDOM_NUMBER:1-3}} you would randomly get a 1, 2, or 3
 
-## Editing commands
-"main.py" is where it all happens.  If you do not know python, it's going to be hard to read or add new functionality to.  But, if you just want to change what the "!" command is, I believe in you.  Just look for a line that says something like "chatObj.register_command('lurk', lurk)".  This specific example is for the "!lurk" command.  If you want to change it to instead be "!snooze", you just need to update the bit between the "'".  So for that example, you would end up with it looking like this: "chatObj.register_command('snooze', lurk)".
+- {{NOW_DATE}}
+  - Gets replaced with the current date.  Useful for putting in a "seed" attribute so the randomizer will give the same number for the entire day
 
-If you want to change more than just the command name, you will need to look at the function.  So for that "!lurk" command, you will need to find the "async def lurk(cmd: chat.ChatCommand):" function.  Change the function to do whatever you want.  If you just want the text it responds with to be different, Change the text between the ", so it would then read something like:
-"await cmd.reply("I changed this!")".
+- {{COUNT}}
+  - Special variable for "Type": "counter" commands.  Gets replaced with the updated total, after the command increases it.
 
-## Adding commands
-If you want to do this, I hope you know python.  If you do not, I hope your AI efforts are fruitful.  Essentially, what you want to do is add the new command next to the others towards the bottom of "main.py", like so "chatObj.register_command('newCommand', newFunction)".  You also need to add the functionality to a new function towards the top like so:
+## Other command options - alias
+You can provide aliases for any of your commands by using the "alias" keyword and listing off the different names you want to give it.  Here's an example using "hydrate" with aliases of "drink" and "water":
 
-async def newFunction(cmd: chat.ChatCommand):
-  await cmd.reply("This is new functionality for a new command")
+"hydrate": {
+  "response": "Drink up!",
+  "type": "reply",
+  "alias": [ "drink", "water" ]
+}
+
+You'll notice each alias is separated by a comma (,) and all of them are between square brackets ( [ and ] ).  Make sure you don't forget those.  So, say you wanted to add another alias for "!hydration".  You would put it in in just like the others, like so:
+
+"alias": [ "drink", "water", "hydration" ]
+
+## Other command options - cooldown
+You can force a cooldown for any of your commands by using the "cooldown" keyword and configuring some other info.  Here's an example using "hydrate" so it can only be triggered every 5 minutes:
+
+"hydrate": {
+  "response": "Drink up!",
+  "type": "reply",
+  "cooldown": {
+    "seconds": 300,
+    "type": "global",
+    "message": "!hydrate is currently on cooldown"
+  }
+}
+
+We've gone over "reply" type commands already, so let's just go through the new "cooldown" section:
+
+"cooldown": {
+ - Start of the configuration for the cooldown of this command
+
+"seconds": 300,
+ - How many seconds the cooldown will last.  But out your calculator if you need, but here's some common numbers:
+    - 60 - 1 minute
+    - 300 - 5 minutes
+    - 1800 - 30 minutes
+    - 3600 - 1 hours
+    - 86400 - 24 hours
+
+"type": "global",
+ - How this cooldown applies.  Options are "user" and "global".  If "global", the cooldown applies to everyone and one person redeeming it will block it for everyone else until the timer runs out.  If "user", the cooldown is for each user.
+
+"message": "!hydrate is currently on cooldown"
+ - Message the bot will reply with if a user tries to use the command while it is on cooldown.  This can include variables listed above.
+
+}
+- This is the closing curly brace for this command.  Don't forget it!
+
+NOTE: Cooldowns are reset if the bot restarts.  So, even if your cooldown is 10 years, if you restart the bot, users will be able to trigger the command again and the timer with start again.
+
+## Other command options - restriction
+You can restrict who can trigger a command by using the "restriction" keyword and giving the details you want.  Here is an example of a "!welcome" command that only you as the streamer can run:
+
+"welcome": {
+  "response": "Hello, and welcome in!",
+  "type": "reply",
+  "restriction": {
+    "type": "STREAMER_ONLY",
+    "message": "This command is only usable by the streamer"
+  }
+}
+
+Let's dive into the "restriction"
+
+"restriction": {
+ - Start of the configuration for the restriction of this command
+
+"type": "STREAMER_ONLY",
+ - Type of restriction you want to enforce.  Option is currently only "STREAMER_ONLY"
+
+"message": "This command is only usable by the streamer"
+ - Message you want the bot to reply with when non-permitted user tried to use the command.  Supports variables.
+
+}
+- This is the closing curly brace for this command.  Don't forget it!
