@@ -8,6 +8,7 @@ import code.events as events
 import code.replies as replies
 import code.counter as counter
 import code.giveaway as giveaway
+# import code.spawn as spawn
 import settings
 
 # https://dev.twitch.tv/console/apps
@@ -84,6 +85,7 @@ async def runBot():
   settings.init()
   await counter.initCount()
   await giveaway.init()
+  # await spawn.init()
 
   # Setup Twitch connection
   bot = await chat.Twitch(CLIENT_ID, CLIENT_SECRET)
@@ -96,7 +98,7 @@ async def runBot():
   chatObj.register_event(ChatEvent.READY, events.onReady)
   chatObj.register_event(ChatEvent.MESSAGE, events.onMessage)
   chatObj.register_event(ChatEvent.SUB, events.onSub)
-
+  
   # COMMANDS
   for command in settings.CONFIG_DATA:
     if command.startswith("__"):
@@ -107,7 +109,7 @@ async def runBot():
     print("-------------------------------------")
   
   # TESTING COMMANDS
-  # chatObj.register_command("test", replies.test)
+  # chatObj.register_command("spawn", spawn.add)
 
   # Blocked and restricted
   chatObj.default_command_execution_blocked_handler = handle_command_blocked
